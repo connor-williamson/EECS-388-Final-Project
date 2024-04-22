@@ -4,6 +4,15 @@
 
 #include "eecs388_lib.h"
 
+int blink(gpio)
+{
+   gpio_mode(gpio, OUTPUT);
+   gpio_write(gpio, ON);
+      delay(500);          
+      gpio_write(gpio, OFF); 
+      delay(300);
+}
+
 void auto_brake(int devid)
 {
     gpio_mode(RED_LED, OUTPUT);
@@ -20,15 +29,23 @@ void auto_brake(int devid)
             uint8_t dist_l = ser_read(devid);
             uint8_t dist_h = ser_read(devid);
             dist = (dist_h << 8) | dist_l;
+        }
         if (dist > 200) {
             gpio_write(RED_LED, OFF);
             gpio_write(GREEN_LED, ON);
-        } else if (100 < dist <= 200) {
+        } else if ((100 < dist) && (dist <= 200)) {
             gpio_write(RED_LED, ON);
             gpio_write(GREEN_LED, ON);
-        } else if (60 < dist < 100) {
+        } else if ((60 < dist) && (dist < 100)) {
             gpio_write(RED_LED, ON);
             gpio_write(GREEN_LED, OFF);
+        } else if (dist <= 60) {
+            gpio_write(RED_LED, ON);
+            gpio_write(GREEN_LED, OFF);
+            delay(100);          
+            gpio_write(RED_LED, OFF); 
+            gpio_write(GREEN_LED, OFF);
+            delay(50);
         }
 
         printf("%d\n", dist);
@@ -75,10 +92,11 @@ int main()
     while (1) {
 
         auto_brake(lidar_to_hifive); // measuring distance using lidar and braking
-        int angle = read_from_pi(pi_to_hifive); //getting turn direction from pi
-        printf("\nangle=%d", angle) 
-        int gpio = PIN_19; 
-        for (int i = 0; i < 10; i++){
+        /*
+            int angle = read_from_pi(pi_to_hifive); //getting turn direction from pi
+            printf("\nangle=%d", angle) 
+            int gpio = PIN_19; 
+            for (int i = 0; i < 10; i++){
             // Here, we set the angle to 180 if the prediction from the DNN is a positive angle
             // and 0 if the prediction is a negative angle.
             // This is so that it is easier to see the movement of the servo.
@@ -97,6 +115,8 @@ int main()
             // steering(gpio, angle);
         }
 
+        */
     }
+
     return 0;
 }
