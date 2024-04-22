@@ -6,15 +6,21 @@
 
 void auto_brake(int devid)
 {
+    gpio_mode(RED_LED, OUTPUT);
+    gpio_mode(GREEN_LED, OUTPUT);
+    ser_setup(devid);
+
+    ser_printline(devid, "Setup completed.\n"); //ser_printline() can be used to print to the serial monitor
     // Task-1: 
     // Your code here (Use Lab 02 - Lab 04 for reference)
     // Use the directions given in the project document
     uint16_t dist = 0000000000000000;
-    if (0x59 == ser_read() && 0x59 == ser_read()) {
-            uint8_t dist_l = ser_read();
-            uint8_t dist_h = ser_read();
+    while (1) {
+        if (0x59 == ser_read(devid) && 0x59 == ser_read(devid)) {
+            uint8_t dist_l = ser_read(devid);
+            uint8_t dist_h = ser_read(devid);
             dist = (dist_h << 8) | dist_l;
-    if (dist > 200) {
+        if (dist > 200) {
             gpio_write(RED_LED, OFF);
             gpio_write(GREEN_LED, ON);
         } else if (100 < dist <= 200) {
@@ -26,6 +32,7 @@ void auto_brake(int devid)
         }
 
         printf("%d\n", dist);
+    }
 
 }
 
