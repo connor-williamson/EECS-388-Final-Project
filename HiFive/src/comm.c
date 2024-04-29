@@ -39,15 +39,12 @@ void auto_brake(int devid)
             gpio_write(GREEN_LED, OFF);
             delay(50);
         }
-
-    //printf("%d\n", dist);
-
     }
 }
 
 int read_from_pi(int devid)
 {
-    printf("begin read from pi\n");
+    //printf("begin read from pi\n");
     // Task-2: 
     // You code goes here (Use Lab 09 for reference)
     // After performing Task-2 at dnn.py code, modify this part to read angle values from Raspberry Pi.
@@ -64,7 +61,7 @@ int read_from_pi(int devid)
     if(ser_isready(devid)){
         ser_readline(devid, 5, data);
         sscanf(data, "%d" , &angle);
-        printf("Angle: %d", angle);
+        //printf("Angle: %d", angle);
         return angle;
     }  
     return 0;
@@ -111,18 +108,13 @@ int main()
         printf("angle=%d\n", angle); 
         int gpio = PIN_19; 
         for (int i = 0; i < 10; i++){
-            // Here, we set the angle to 180 if the prediction from the DNN is a positive angle
-            // and 0 if the prediction is a negative angle.
-            // This is so that it is easier to see the movement of the servo.
-            // You are welcome to pass the angle values directly to the steering function.
-            // If the servo function is written correctly, it should still work,
-            // only the movements of the servo will be more subtle
-            // Uncomment the line below to see the actual angles on the servo.
-            // Remember to comment out the if-else statement above!
-            if(angle > 0){
-                steering(gpio, angle);
-            }else{
-                steering(gpio, 0);
+            //This sends the steering angle to the steering function to move the servo
+            //steering(gpio, angle);
+            if(angle>0){
+                steering(gpio, 180);
+            }
+            else {
+                steering(gpio,0);
             }
         }
 
