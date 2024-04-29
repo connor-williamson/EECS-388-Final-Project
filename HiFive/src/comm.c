@@ -65,7 +65,7 @@ int read_from_pi(int devid)
 
     if(ser_isready(devid)){
         ser_readline(devid, 5, data);
-        sscanf(data, "%d" , &angle);;
+        scanf(data, "%d" , &angle);
 
         return angle;
     }  
